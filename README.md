@@ -3,6 +3,7 @@ App basada en Flask para traducir texto. Proporciona las siguientes funcionalida
 
 - Subir y traducir archivos de texto.
 - Ingresar texto manualmente para su traducción.
+- Seleccionar idioma de traducción
 - Mostrar el texto traducido en formato HTML.
 - Ajustar el tamaño de fuente del texto traducido.
 
