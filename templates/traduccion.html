@@ -30,6 +30,8 @@
                 <form id="uploadForm" method="POST" action="{{ url_for('translate') }}" enctype="multipart/form-data"
                     style="display: none;">
                     <input type="file" name="file" id="fileInput" />
+                    <input type="hidden" name="source_language" value="{{ src }}" />
+                    <input type="hidden" name="target_language" value="{{ dest }}" />
                 </form>
             </div>
             <div class="history">
@@ -66,7 +68,7 @@
                                 <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Inicio</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="#" tabindex="-1" aria-disabled="true">Donaciones</a>
+                                <a class="nav-link active" href="#" tabindex="-1" aria-disabled="true">Demo</a>
                             </li>
                         </ul>
                         <div class="btn-group">
@@ -85,26 +87,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <script>
-        $(".sidebar ul li").on("click", function () {
-            $(".sidebar ul li.active").removeClass("active");
-            $(this).addClass("active");
-        });
-        $(".open-btn").on("click", function () {
-            $(".sidebar").addClass("active");
-        });
-        $(".close-btn").on("click", function () {
-            $(".sidebar").removeClass("active");
-        });
-        function changeFontSize(change) {
-            var paragraphs = document.getElementsByTagName('p');
-            for (var i = 0; i < paragraphs.length; i++) {
-                var currentSize = parseFloat(window.getComputedStyle(paragraphs[i]).fontSize);
-                var newSize = currentSize + parseFloat(change);
-                paragraphs[i].style.fontSize = newSize + 'px';
-            }
-        }
-    </script>
 </body>
 
 </html>

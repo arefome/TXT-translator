@@ -37,3 +37,49 @@ fileInput.addEventListener("change", function () {
     // Enviar el formulario para redirigir al cliente al endpoint en Flask
     uploadForm.submit();
 });
+
+$(".open-btn").on("click", function () {
+    $(".sidebar").addClass("active");
+});
+$(".close-btn").on("click", function () {
+    $(".sidebar").removeClass("active");
+});
+var tooltipTriggerList = [].slice.call(
+    document.querySelectorAll('[data-bs-toggle="tooltip"]')
+);
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+function showLanguageSelectors() {
+    var textarea = document.querySelector('textarea[name="file_content"]');
+    var languageSelectors = document.getElementById("languageSelectors");
+    if (textarea.value.trim() !== "") {
+        languageSelectors.style.display = "block";
+    } else {
+        languageSelectors.style.display = "none";
+    }
+}
+document.addEventListener("DOMContentLoaded", function () {
+    showLanguageSelectors();
+});
+
+$(".sidebar ul li").on("click", function () {
+    $(".sidebar ul li.active").removeClass("active");
+    $(this).addClass("active");
+});
+$(".open-btn").on("click", function () {
+    $(".sidebar").addClass("active");
+});
+$(".close-btn").on("click", function () {
+    $(".sidebar").removeClass("active");
+});
+function changeFontSize(change) {
+    var paragraphs = document.getElementsByTagName("p");
+    for (var i = 0; i < paragraphs.length; i++) {
+        var currentSize = parseFloat(
+            window.getComputedStyle(paragraphs[i]).fontSize
+        );
+        var newSize = currentSize + parseFloat(change);
+        paragraphs[i].style.fontSize = newSize + "px";
+    }
+}

@@ -9,15 +9,20 @@ app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-   
+
 ALLOWED_EXTENSIONS = set(['txt'])
-   
+
+langs_list = GoogleTranslator().get_supported_languages()
+
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def translate_text(text):
-    max_chars = 4000
 
+def translate_text(text, src, dest):
+    max_chars = 4000
+    if(src == "" or src == "Detectar idioma"):
+        src = 'auto'
     # Divide el texto en líneas en lugar de caracteres individuales
     text_lines = text.splitlines()
 
@@ -25,7 +30,7 @@ def translate_text(text):
     translated_lines = []
     current_chars = 0
     current_part = ""
-    translator = GoogleTranslator(source='auto', target='es')
+    translator = GoogleTranslator(source=src, target=dest)
     for line in text_lines:
         if current_chars + len(line) < max_chars:
             current_part += line + "\n"
@@ -47,14 +52,17 @@ def translate_text(text):
 
     return translated_text
 
+
 def export_html(content):
 
     return True
 
+
 def export_txt(content):
     return True
 
-def get_html_template(text):
+
+def get_html_template(text, src, dest):
     title_regex = r"<--(.+?)-->"
     match = re.search(title_regex, text)
     if match:
@@ -65,12 +73,12 @@ def get_html_template(text):
 
     content_html = Markup(text.replace("\n", "</p>\n<p>"))
     html = render_template(
-        'traduccion.html', title=title, content=content_html)
+        'traduccion.html', title=title, content=content_html, src=src, dest=dest)
 
     return html
 
 
-def get_html_text(text):
+def get_html_text(text, src, dest):
     character_names = [
         "100_Man_Challenge",
         "Bi_Sa-Won",
@@ -198,12 +206,12 @@ def get_html_text(text):
         wiki_link = f'https://legend-of-the-northern-blade.fandom.com/wiki/{character_name}'
         pretext = regex.sub(
             Markup(f'<a href="{wiki_link}" target="_blank">{name_aux}</a>'), pretext, count=1)
-    return get_html_template(pretext)
+    return get_html_template(pretext, src, dest)
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', languages=langs_list)
 
 
 @app.route('/upload', methods=['POST'])
@@ -213,28 +221,32 @@ def upload():
     if file and allowed_file(file.filename):
         file_content = file.read().decode('utf-8')
         #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return render_template('index.html', file_content=file_content, file_name=file_name)
+        return render_template('index.html', file_content=file_content, file_name=file_name, languages=langs_list)
     else:
         print('Invalid Upload only txt')
     print("file uploaded successfully")
-    return render_template('index.html')
+    return render_template('index.html', languages=langs_list)
 
 
 @app.route('/translate', methods=['POST'])
 def translate():
     file = request.files.get('file')
+    src = request.form['source_language']
+    dest = request.form['target_language']
     if(file):
         file_content = file.read().decode('utf-8')
     else:
         file_content = request.form['file_content']
-    translated_text = translate_text(file_content)
-    html_text = get_html_text(translated_text)
+    translated_text = translate_text(file_content, src, dest)
+    html_text = get_html_text(translated_text, src, dest)
 
     return html_text
 
+
 @app.route('/download', methods=['POST'])
 def download():
-   pass
+    pass
+
 
 if __name__ == '__main__':
     app.run(debug=True)
